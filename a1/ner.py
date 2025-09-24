@@ -13,45 +13,44 @@
 # This code will be graded automatically using Gradescope.
 # =========================================================================================================
 import pandas as pd
+from nltk.tag import StanfordNERTagger
 import nltk
-from nltk.tag.stanford import StanfordNERTagger
+
 
 
 # Function: get_ner(text)
 # fname: A string containing text to be processed
 # Returns: A list of tuples containing (token, tag)
 def get_ner(text, path_to_jar,path_to_model):
-    
-    tagger = None
-
+    nltk.download('punkt_tab', quiet=True)
+    nltk.download('punkt', quiet=True)
+    tagger = StanfordNERTagger(
+        model_filename=path_to_model,
+        path_to_jar=path_to_jar,
+        encoding='utf-8'
+    )
     tagged_word_list = []
-
-    
-    return None
+    for sent in nltk.sent_tokenize(text):
+        tokens = nltk.word_tokenize(sent)
+        tagged = tagger.tag(tokens)
+        tagged_word_list.extend([(tok, tag) for tok, tag in tagged if tag != 'O'])
+    return tagged_word_list
 
 # Use this main function to test your code. Sample code is provided to assist with the assignment;
 # feel free to change/remove it. Some of the provided sample code will help you in answering
 # questions, but it won't work correctly until all functions have been implemented.
 if __name__ == "__main__":
-    
-    # Paths to Stanford NER tagger model and jar file.
-    path_to_jar = None
-    path_to_model = None
-
+    path_to_jar = "/Users/nishanthnagendran/Downloads/stanford-ner-2020-11-17/stanford-ner.jar"
+    path_to_model = "/Users/nishanthnagendran/Downloads/stanford-ner-2020-11-17/classifiers/english.muc.7class.distsim.crf.ser.gz"
     data = pd.read_csv('dataset.csv')
-
-    
     for index, row in data.iterrows():
-        if index >= 2: 
+        if index >= 2:
             break
-
         title = row['title']
         summary = row['summary']
-        entities = get_ner(summary,path_to_jar,path_to_model)
-
+        entities = get_ner(summary, path_to_jar, path_to_model)
         print(f"Movie Title: {title}")
         print(f"List of Named Entities: {entities}")
-
 
 ### Expected Outputs
 
