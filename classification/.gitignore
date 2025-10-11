@@ -1,0 +1,6 @@
+w2v.pkl
+dataset.csv
+test_data.csv
+*.csv
+venv/
+.venv/
